@@ -2,6 +2,10 @@
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
 
+#define R 12
+#define G 14
+#define B 4
+
 //SSID and password
 const char *ssid = "[REDACTED]";
 const char *password = "realityisalie";
@@ -40,10 +44,34 @@ void handleRoot() {
 
 void receiveColors() {
   Serial.println("You've got mail ");
+  //Check received values
   checkMail(server.arg(0), server.arg(1), server.arg(2));
+  int r_new=-1;
+  int g_new=-1;
+  int b_new=-1;
 
+  //Extract values from POSTs request
+  for (uint8_t i=0; i<server.args(); i++) {
+    Serial.println(server.argName(i));
+    if(server.argName(i)=="R") {
+      r_new = (server.arg(i).toInt() * 4) + 4;
+    } else if (server.argName(i)=="G") {
+      g_new = (server.arg(i).toInt() * 4) + 4;
+    } else if (server.argName(i)=="B") {
+      b_new = (server.arg(i).toInt() * 4) + 4;
+    }
+  }
+  //print out extracted values
+  Serial.println(r_new);
+  Serial.println(g_new);
+  Serial.println(b_new);
+  //set the led color
+  analogWrite(R, r_new);
+  analogWrite(G, g_new);
+  analogWrite(B, b_new);
+  
 }
-
+//Print out values and send response
 void checkMail(String r, String g, String b) {
   String red, green, blue;
   String received;
