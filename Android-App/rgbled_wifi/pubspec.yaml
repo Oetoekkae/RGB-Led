@@ -1,5 +1,5 @@
-name: rgb_led
-description: App for controlling a RGB led, made with flutter
+name: rgbled_wifi
+description: A new Flutter application.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43

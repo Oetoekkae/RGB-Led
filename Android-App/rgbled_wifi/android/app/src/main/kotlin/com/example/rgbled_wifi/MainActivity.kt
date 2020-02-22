@@ -1,4 +1,4 @@
-package com.example.rgb_led
+package com.example.rgbled_wifi
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -7,7 +7,7 @@
 #define B 4
 
 //SSID and password
-const char *ssid = "[REDACTED]";
+const char *ssid = "LED";
 const char *password = "realityisalie";
 
 ESP8266WebServer server(80);

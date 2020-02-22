@@ -1,6 +1,6 @@
-# rgb_led
+# rgbled_wifi
 
-App for controlling a RGB led, made with flutter
+A new Flutter application.
 
 ## Getting Started
 
