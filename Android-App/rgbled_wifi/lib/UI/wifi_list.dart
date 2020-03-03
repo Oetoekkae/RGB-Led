@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class WifiList extends StatelessWidget {
 
-  final _suggestions = ["wifi1", "wifi2", "wifi3", "wifi4", "wifi5", "wifi6", "wifi7"];
+  final _ssids = ["wifi1", "wifi2", "wifi3", "wifi4", "wifi5", "wifi6", "wifi7"];
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final bool _answer;
   WifiList(this._answer);
@@ -29,7 +29,7 @@ class WifiList extends StatelessWidget {
                         style: _biggerFont,
                       ),
                       title: Text(
-                        _suggestions[index],
+                        _ssids[index],
                         style: _biggerFont,
                       ),
                     );
