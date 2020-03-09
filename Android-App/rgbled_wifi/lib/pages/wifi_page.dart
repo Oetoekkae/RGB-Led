@@ -13,11 +13,11 @@ class WifiPageState extends State<WifiPage> {
   @override
   Widget build(BuildContext context) {
     return new Column(
-          children: <Widget>[
-            new WifiTitle(),
-            new WifiList(true),
-            new WifiConnectButton()
-          ],
-        );
+      children: <Widget>[
+        new WifiTitle(),
+        new WifiList(),
+        new WifiConnectButton()
+      ],
+    );
   }
 }

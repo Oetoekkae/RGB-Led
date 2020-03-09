@@ -54,11 +54,11 @@ void receiveColors() {
   for (uint8_t i=0; i<server.args(); i++) {
     Serial.println(server.argName(i));
     if(server.argName(i)=="R") {
-      r_new = (server.arg(i).toInt() * 4) + 4;
+      r_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
     } else if (server.argName(i)=="G") {
-      g_new = (server.arg(i).toInt() * 4) + 4;
+      g_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
     } else if (server.argName(i)=="B") {
-      b_new = (server.arg(i).toInt() * 4) + 4;
+      b_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
     }
   }
   //print out extracted values

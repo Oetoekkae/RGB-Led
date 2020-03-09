@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rgbled_wifi/pages/main_page.dart';
+import 'package:rgbled_wifi/pages/wifi_page.dart';
 
 class WifiConnectButton extends StatelessWidget{
   @override
@@ -6,7 +8,7 @@ class WifiConnectButton extends StatelessWidget{
     return new Material(
       child: new Center(
           child: new InkWell(
-            onTap: () => print("Sie painoit"),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new MainPage())),
               child: new Container(
                 child: Text("Connect",
                   style: new TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
