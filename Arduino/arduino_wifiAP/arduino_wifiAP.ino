@@ -50,15 +50,18 @@ void receiveColors() {
   int g_new=-1;
   int b_new=-1;
 
-  //Extract values from POSTs request
+  //Extract values from request
   for (uint8_t i=0; i<server.args(); i++) {
-    Serial.println(server.argName(i));
+    //Serial.println(server.argName(i));
     if(server.argName(i)=="R") {
-      r_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
+      r_new = ((server.arg(i).substring(1,4)).toInt());
+      r_new = ((255 - r_new) * 4) + 4;
     } else if (server.argName(i)=="G") {
-      g_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
+      g_new = ((server.arg(i).substring(1,4)).toInt());
+      g_new = ((255 - g_new) * 4) + 4;
     } else if (server.argName(i)=="B") {
-      b_new = ((server.arg(i).substring(1,4)).toInt() * 4) + 4;
+      b_new = ((server.arg(i).substring(1,4)).toInt());
+      b_new = ((255 - b_new) * 4) + 4;
     }
   }
   //print out extracted values
@@ -80,5 +83,5 @@ void checkMail(String r, String g, String b) {
   blue += b;
   received += "Got these: " + red + ", " + green + ", " + blue;
   Serial.println(received);
-  server.send(200, "text/plane", received);
+  server.send(200);
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rgbled_wifi/pages/main_page.dart';
 import './wifi_page.dart';
 import './main_page.dart';
-import '../UI/color_picker_widget.dart';
 
 class LandingPage extends StatelessWidget {
   @override
