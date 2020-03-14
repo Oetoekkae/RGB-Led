@@ -6,7 +6,7 @@ import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
 const String A = "0123456789abcdef";
 final _biggerFont = const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black);
-
+bool _isSending = false;
 class MainPage extends StatefulWidget{
   @override
   State createState() => new MainPageState();
@@ -22,10 +22,10 @@ class MainPageState extends State<MainPage> {
             Center(
               child: CircleColorPicker(
                 initialColor: Colors.blue,
-                onChanged: (color) => _makePostReq(color),
+                onChanged: (color) => _request(color),
                 size: const Size(300, 300),
-                strokeWidth: 4,
-                thumbSize: 36,
+                strokeWidth: 2,
+                thumbSize: 32,
               ),
               heightFactor: 1.3,
             ),
@@ -54,6 +54,7 @@ class MainPageState extends State<MainPage> {
 }
 
 _makePostReq(Color hexVal) {
+  _isSending = true;
   String tempStr = hexVal.toString();
   List tempList = tempStr.split("Color(0xff");
   String hexValue = tempList[1].toString().substring(0, 6);
@@ -61,7 +62,20 @@ _makePostReq(Color hexVal) {
                                                 'G' : HEX.decode(hexValue.substring(2,4)).toString(),
                                                 'B' : HEX.decode(hexValue.substring(4,6)).toString()});
   Map<String, String> headers = {"Content-type":"text/html"};
-  Future<void> response = post(uri, headers:headers)
-      .then((response) => print(response.body))
+  Future<void> response = put(uri, headers:headers)
+      .then((response) => getResponse(response))
       .catchError((error) => print(error));
+}
+
+void getResponse(Response response) {
+  _isSending = false;
+  print("Done, " + response.body);
+}
+
+void _request(Color hexVal) {
+  if(!_isSending) {
+    _makePostReq(hexVal);
+    return;
+  }
+  print("Can't, still sending this previous");
 }
