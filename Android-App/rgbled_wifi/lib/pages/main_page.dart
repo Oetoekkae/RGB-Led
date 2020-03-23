@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 //import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:rgbled_wifi/UI/flutter_circle_color_picker.dart';
+import 'package:rgbled_wifi/UI/my_button.dart';
 
 
 const String A = "0123456789abcdef";
@@ -19,36 +20,56 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: _bgColor,
-        body: new Column(
-            children: <Widget>[
-                CircleColorPicker(
-                  initialColor: Colors.blue,
-                  onChanged: (color) => _request(color),
-                  size: const Size(300, 300),
-                  strokeWidth: 4,
-                  thumbSize: 36,
-                ),
-              Expanded(
-                child: Container(
-                  child: new ListView.separated(
-                    padding: const EdgeInsets.all(16.0),
-                    itemCount: 5,
-                    itemBuilder: (context, i) =>
-                        ListTile(
-                          leading: Text("SSID: ", style: _biggerFont,
-                          ),
-                          title: Text(i.toString(), style: _biggerFont,
-                          ),
-                        ),
-                    separatorBuilder: (context, i) => Divider(),
-
+      home: SafeArea(
+        child: Scaffold(
+          backgroundColor: _bgColor,
+          body: new Column(
+              children: <Widget>[
+                  CircleColorPicker(
+                    initialColor: Colors.blue,
+                    onChanged: (color) => _request(color),
+                    size: const Size(300, 300),
+                    strokeWidth: 4,
+                    thumbSize: 36,
                   ),
+                Expanded(
+                  child: GridView.count(
+                    primary: false,
+                    padding: const EdgeInsets.all(20),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        child: MyButton("Button 1"),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        child: MyButton("Button 2"),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(2),
+                          child: MyButton("Button 3"),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        child: MyButton("Button 4"),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        child: MyButton("Button 5"),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        child: MyButton("Button 6"),
+                      ),
+                    ],
+                  )
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+        ),
       ),//   <--- image
     );
   }
