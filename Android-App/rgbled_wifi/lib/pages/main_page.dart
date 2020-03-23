@@ -6,6 +6,7 @@ import 'package:rgbled_wifi/UI/flutter_circle_color_picker.dart';
 
 
 const String A = "0123456789abcdef";
+final String host = "192.168.4.1";
 final _biggerFont = const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black);
 bool _isSending = false;
 Color _bgColor = Colors.blue;
@@ -19,20 +20,16 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: new Material(
-          color: _bgColor,
-          child: Column(
+        backgroundColor: _bgColor,
+        body: new Column(
             children: <Widget>[
-              Center(
-                child: CircleColorPicker(
+                CircleColorPicker(
                   initialColor: Colors.blue,
                   onChanged: (color) => _request(color),
                   size: const Size(300, 300),
                   strokeWidth: 4,
                   thumbSize: 36,
                 ),
-                heightFactor: 1.3,
-              ),
               Expanded(
                 child: Container(
                   child: new ListView.separated(
@@ -52,7 +49,6 @@ class MainPageState extends State<MainPage> {
               ),
             ],
           ),
-        ),
       ),//   <--- image
     );
   }
@@ -63,7 +59,7 @@ _makePostReq(Color hexVal) {
   String tempStr = hexVal.toString();
   List tempList = tempStr.split("Color(0xff");
   String hexValue = tempList[1].toString().substring(0, 6);
-  var uri = Uri.http('192.168.4.1', '/colors', {'R' : HEX.decode(hexValue.substring(0,2)).toString(),
+  var uri = Uri.http(host, '/colors', {'R' : HEX.decode(hexValue.substring(0,2)).toString(),
                                                 'G' : HEX.decode(hexValue.substring(2,4)).toString(),
                                                 'B' : HEX.decode(hexValue.substring(4,6)).toString()});
   Map<String, String> headers = {"Content-type":"text/html"};
@@ -79,6 +75,7 @@ void getResponse(Response response) {
 
 void _request(Color hexVal) {
   if(!_isSending) {
+    print(hexVal);
     _makePostReq(hexVal);
     setBgColor(hexVal);
     return;
@@ -87,4 +84,5 @@ void _request(Color hexVal) {
 }
 void setBgColor(Color bg) {
   _bgColor = bg;
+  //print(bg.toString());
 }
