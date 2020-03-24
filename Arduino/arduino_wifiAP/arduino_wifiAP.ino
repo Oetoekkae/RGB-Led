@@ -85,3 +85,18 @@ void checkMail(String r, String g, String b) {
   Serial.println(received);
   server.send(200);
 }
+
+void flashColor(int led){
+  analogWrite(led, 1024);
+    for(int i=0;i<1022; i= i+2){
+      analogWrite(led, i);
+      delay(5);
+      if(i==1020){
+        Serial.println("tääl");
+        for(int x=1024;x>2;x= x-2){
+          analogWrite(led, x);
+          delay(5);
+        }
+      }
+    }
+}
