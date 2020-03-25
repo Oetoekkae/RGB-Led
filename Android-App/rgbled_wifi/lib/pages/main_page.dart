@@ -11,7 +11,9 @@ final String host = "192.168.4.1";
 final _biggerFont = const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black);
 bool _isSending = false;
 Color _bgColor = Colors.blue;
+
 class MainPage extends StatefulWidget{
+
   @override
   State createState() => new MainPageState();
 }
@@ -24,48 +26,43 @@ class MainPageState extends State<MainPage> {
         child: Scaffold(
           backgroundColor: _bgColor,
           body: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                  CircleColorPicker(
-                    initialColor: Colors.blue,
-                    onChanged: (color) => _request(color),
-                    size: const Size(300, 300),
-                    strokeWidth: 4,
-                    thumbSize: 36,
+                Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54
+                    ),
+                    padding: EdgeInsetsDirectional.only(bottom: 15),
+                    child: Center(
+                      child: CircleColorPicker(
+                        initialColor: Colors.blue,
+                        onChanged: (color) {
+                          setState(() {
+                            _request(color);
+                          });
+                        },
+                        size: const Size(300, 300),
+                        strokeWidth: 4,
+                        thumbSize: 36,
+                      ),
+                    ),
                   ),
                 Expanded(
-                  child: GridView.count(
-                    primary: false,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 2,
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        child: MyButton("Button 1"),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        child: MyButton("Button 2"),
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(2),
-                          child: MyButton("Button 3"),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        child: MyButton("Button 4"),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        child: MyButton("Button 5"),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        child: MyButton("Button 6"),
-                      ),
-                    ],
-                  )
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2,
+                        color: Colors.black
+                      )
+                    ),
+                    child: GridView.count(
+                      primary: false,
+                      padding: const EdgeInsets.all(0),
+                      crossAxisSpacing: 0,
+                      mainAxisSpacing: 0,
+                      crossAxisCount: 2,
+                      children: spawnButtons(7)),
+                  ),
                 ),
               ],
             ),
@@ -89,6 +86,16 @@ _makePostReq(Color hexVal) {
       .catchError((error) => print(error));
 }
 
+_requestRainbows() {
+  _isSending = true;
+  var uri = Uri.http(host, '/RAINBOW!');
+  Map<String, String> headers = {"Content-type": "text/html"};
+  Future<void> response = put(uri, headers:headers)
+      .then((response) => getResponse(response))
+      .catchError((error) => print(error));
+}
+
+
 void getResponse(Response response) {
   _isSending = false;
   print("Done, " + response.body);
@@ -98,7 +105,8 @@ void _request(Color hexVal) {
   if(!_isSending) {
     print(hexVal);
     _makePostReq(hexVal);
-    setBgColor(hexVal);
+    _bgColor = hexVal;
+    //setBgColor(hexVal);
     return;
   }
   print("Can't, still sending this previous");
@@ -106,4 +114,13 @@ void _request(Color hexVal) {
 void setBgColor(Color bg) {
   _bgColor = bg;
   //print(bg.toString());
+}
+
+List<Widget> spawnButtons(int ammount) {
+  List<Widget> buttons = [];
+  buttons.add(MyButton("Rainbows!", true, () => _requestRainbows()));
+  for(int i = 0; i<ammount;i++) {
+    buttons.add(MyButton("Button " + (i+1).toString(), false, () => print("not this")));
+  }
+  return buttons;
 }

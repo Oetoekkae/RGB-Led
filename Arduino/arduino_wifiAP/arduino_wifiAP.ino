@@ -12,7 +12,7 @@ const char *password = "realityisalie";
 
 ESP8266WebServer server(80);
 
-//Serve configuration
+//Server configuration
 void setup() {
   delay(1000);
   Serial.begin(115200);
@@ -27,6 +27,7 @@ void setup() {
  //Init routes
   server.on("/", handleRoot);
   server.on("/colors", receiveColors);
+  server.on("/RAINBOW!", rainbow);
 
  //Start server
   server.begin();
@@ -40,6 +41,7 @@ void loop() {
 
 void handleRoot() {
   server.send(200, "text/html", "<h1>You are connected</h1>");
+  
 }
 
 void receiveColors() {
@@ -74,6 +76,10 @@ void receiveColors() {
   analogWrite(B, b_new);
   
 }
+
+void rainbow() {
+  loopAllColors();  
+}
 //Print out values and send response
 void checkMail(String r, String g, String b) {
   String red, green, blue;
@@ -88,15 +94,25 @@ void checkMail(String r, String g, String b) {
 
 void flashColor(int led){
   analogWrite(led, 1024);
-    for(int i=0;i<1022; i= i+2){
-      analogWrite(led, i);
-      delay(5);
-      if(i==1020){
-        Serial.println("tääl");
-        for(int x=1024;x>2;x= x-2){
-          analogWrite(led, x);
-          delay(5);
-        }
+  Serial.println("1024 -> 0");
+  for(int x=1024;x>2;x= x-2){
+    analogWrite(led, x);
+    delay(5);
+    if(x<=4){
+      Serial.println("0 -> 1024");
+      for(int i=0;i<1024; i= i+2){
+        analogWrite(led, i);
+        delay(5);
       }
     }
+  }
+  analogWrite(led, 1024);
+}
+
+void loopAllColors() {
+  Serial.print("comissing rainbows");
+  flashColor(12);
+  flashColor(14);
+  flashColor(4);
+  server.send(200);
 }
