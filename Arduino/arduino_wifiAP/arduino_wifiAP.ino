@@ -2,10 +2,14 @@
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
 
-#define R 12
-#define G 14
-#define B 4
-
+//led1
+#define R 5
+#define G 13
+#define B 12
+//led2
+#define R2 2
+#define G2 14
+#define B2 16
 //SSID and password
 const char *ssid = "LED";
 const char *password = "realityisalie";
@@ -74,6 +78,9 @@ void receiveColors() {
   analogWrite(R, r_new);
   analogWrite(G, g_new);
   analogWrite(B, b_new);
+  analogWrite(R2, r_new);
+  analogWrite(G2, g_new);
+  analogWrite(B2, b_new);
   
 }
 
@@ -111,8 +118,8 @@ void flashColor(int led){
 
 void loopAllColors() {
   Serial.print("comissing rainbows");
-  flashColor(12);
-  flashColor(14);
-  flashColor(4);
+  flashColor(R);
+  flashColor(G);
+  flashColor(B);
   server.send(200);
 }
