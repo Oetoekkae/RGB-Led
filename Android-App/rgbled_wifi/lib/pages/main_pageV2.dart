@@ -29,9 +29,10 @@ class MainPageV2State extends State<MainPageV2> {
         child: Scaffold(
           backgroundColor: _bgColor,
           body: new Column(
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
+                flex: 1,
                 child: Container(
                   //alignment: Alignment.center,
                   color: Colors.black,
@@ -53,7 +54,7 @@ class MainPageV2State extends State<MainPageV2> {
                     initialColor: Colors.blue,
                     onChanged: (color) {
                       setState(() {
-                        _request(color);
+                        _request(color, 0);
                       });
                     },
                     size: const Size(300, 300),
@@ -79,7 +80,7 @@ class MainPageV2State extends State<MainPageV2> {
                     initialColor: Colors.blue,
                     onChanged: (color) {
                       setState(() {
-                        _request(color);
+                        _request(color, 1);
                       });
                     },
                     size: const Size(300, 300),
@@ -96,18 +97,34 @@ class MainPageV2State extends State<MainPageV2> {
   }
 }
 
-_makePostReq(Color hexVal) {
+_makePostReq(Color hexVal, int led) {
   _isSending = true;
+  String ledNum;
+  if(led == 0){
+    ledNum = "0";
+  } else {
+    ledNum = "1";
+  }
   String tempStr = hexVal.toString();
   List tempList = tempStr.split("Color(0xff");
   String hexValue = tempList[1].toString().substring(0, 6);
-  var uri = Uri.http(host, '/colors', {'R' : HEX.decode(hexValue.substring(0,2)).toString(),
+  var uri = Uri.http(host, '/colors', {'LED' : ledNum,'R' : HEX.decode(hexValue.substring(0,2)).toString(),
     'G' : HEX.decode(hexValue.substring(2,4)).toString(),
     'B' : HEX.decode(hexValue.substring(4,6)).toString()});
   Map<String, String> headers = {"Content-type":"text/html"};
   Future<void> response = put(uri, headers:headers)
       .then((response) => getResponse(response))
       .catchError((error) => print(error));
+}
+void _request(Color hexVal, int led) {
+  if(!_isSending) {
+    print(hexVal);
+    _makePostReq(hexVal, led);
+    _bgColor = hexVal;
+    //setBgColor(hexVal);
+    return;
+  }
+  print("Can't, still sending this previous");
 }
 
 _requestRainbows() {
@@ -119,22 +136,11 @@ _requestRainbows() {
       .catchError((error) => print(error));
 }
 
-
 void getResponse(Response response) {
   _isSending = false;
   print("Done, " + response.body);
 }
 
-void _request(Color hexVal) {
-  if(!_isSending) {
-    print(hexVal);
-    _makePostReq(hexVal);
-    _bgColor = hexVal;
-    //setBgColor(hexVal);
-    return;
-  }
-  print("Can't, still sending this previous");
-}
 void setBgColor(Color bg) {
   _bgColor = bg;
   //print(bg.toString());

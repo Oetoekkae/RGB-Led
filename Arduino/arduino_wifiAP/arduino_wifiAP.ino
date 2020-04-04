@@ -3,11 +3,11 @@
 #include <ESP8266WebServer.h>
 
 //led1
-#define R 5
+#define R 2
 #define G 13
 #define B 12
 //led2
-#define R2 2
+#define R2 5
 #define G2 14
 #define B2 16
 //SSID and password
@@ -51,7 +51,7 @@ void handleRoot() {
 void receiveColors() {
   Serial.println("You've got mail ");
   //Check received values
-  checkMail(server.arg(0), server.arg(1), server.arg(2));
+  checkMail(server.arg(0), server.arg(1), server.arg(2), server.arg(3));
   int r_new=-1;
   int g_new=-1;
   int b_new=-1;
@@ -75,12 +75,19 @@ void receiveColors() {
   Serial.println(g_new);
   Serial.println(b_new);
   //set the led color
-  analogWrite(R, r_new);
-  analogWrite(G, g_new);
-  analogWrite(B, b_new);
-  analogWrite(R2, r_new);
-  analogWrite(G2, g_new);
-  analogWrite(B2, b_new);
+  if(server.arg(0) == "1") {
+    Serial.print("Setting secondary");
+    analogWrite(R2, r_new);
+    analogWrite(G2, g_new);
+    analogWrite(B2, b_new);
+  } else {
+    Serial.println("Setting primary");
+    analogWrite(R, r_new);
+    analogWrite(G, g_new);
+    analogWrite(B, b_new);
+  }
+  
+  
   
 }
 
@@ -88,13 +95,13 @@ void rainbow() {
   loopAllColors();  
 }
 //Print out values and send response
-void checkMail(String r, String g, String b) {
+void checkMail(String led, String r, String g, String b) {
   String red, green, blue;
   String received;
   red += r;
   green += g;
   blue += b;
-  received += "Got these: " + red + ", " + green + ", " + blue;
+  received += "Got these: " + red + ", " + green + ", " + blue + " and its " + led;
   Serial.println(received);
   server.send(200);
 }
