@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:rgbled_wifi/UI/customicons/my_flutter_app_icons.dart';
+import 'package:rgbled_wifi/UI/customicons/bulb_icons_icons.dart';
 
 final widgetText =  const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.white);
 
 class SecondaryLightSwitch extends StatefulWidget{
-  SecondaryLightSwitch({Key key});
+  SecondaryLightSwitch({Key key,
+  this.onChanged});
+
+  final ValueChanged<bool> onChanged;
 
   @override
   _SecondaryLightSwicthState createState() => _SecondaryLightSwicthState();
@@ -25,7 +28,7 @@ class _SecondaryLightSwicthState extends State<SecondaryLightSwitch> {
             _secondaryLed = value;
           });
       },
-      secondary: Icon(_secondaryLed == true ? MyFlutterApp.lightbulb_outline : MyFlutterApp.lightbulb),
+      secondary: Icon(_secondaryLed == true ? Icons.lightbulb_outline : Icons.highlight),
       ),
     );
   }

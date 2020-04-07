@@ -311,7 +311,7 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
               animation: _offset,
               builder: (context, child) {
                 return Positioned(
-                  left: _offset.value.dx,
+                  left: _offset.value.dx ,
                   top: _offset.value.dy,
                   child: child,
                 );

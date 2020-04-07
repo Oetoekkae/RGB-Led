@@ -39,10 +39,11 @@ flutter:
     - assets/images/RainbowBulb.png
     - assets/images/BlankBulb_small.png
     - assets/images/RainbowBulb_small.png
-    - assets/fonts/MyFlutterApp.ttf
   #  - images/a_dot_ham.jpeg
   fonts:
-    - family:  MyFlutterApp
+    - family:  Bulbicons
+      fonts:
+        - asset: assets/fonts/BulbIcons.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -21,12 +21,11 @@ class MyButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(0),
-      margin: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: rainbow == true ? _colors:[Colors.teal, Colors.teal],
-          //stops: _colors.length * 1.0,
 
 
         ),
