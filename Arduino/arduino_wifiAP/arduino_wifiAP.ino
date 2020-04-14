@@ -110,6 +110,7 @@ void checkForBool() {
 }
 
 void randomColor(){
+  effectOn = false;
   int red, green, blue;
   red = random(1024);
   green = random(1024);
@@ -121,8 +122,9 @@ void randomColor(){
 
 
 void loopRGB() {
-  effectOn = true;
+  effectOn = false;
   server.send(200);
+  effectOn = true;
   setColorTo(0, 1024, 1024, 1024);
   setColorTo(1, 1024, 1024, 1024);
   while(effectOn){
@@ -134,10 +136,11 @@ void loopRGB() {
 
 
 void rainbow() {
+  effectOn = false;
  Serial.print("comissing rainbows");
  float speed = 50;
- effectOn = true;
  server.send(200);
+ effectOn = true;
  while(effectOn){
    setColorTo(1, 4, 1024, 1024);//RED
    setColorTo(0, 72, 504, 75);//Violet
