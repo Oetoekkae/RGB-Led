@@ -2,11 +2,12 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class MyButton extends StatelessWidget{
 
   final String _name;
-  final bool rainbow;
+  String color;
   final VoidCallback _onTap;
   final List<Color> _colors = [
     Colors.pink,
@@ -16,16 +17,16 @@ class MyButton extends StatelessWidget{
     Colors.teal
   ];
 
-  MyButton( this._name, this.rainbow, this._onTap);
+  MyButton( this._name, this._onTap, [this.color]);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: rainbow == true ? _colors:[Colors.teal, Colors.teal],
+          colors: getColor(this.color),
 
 
         ),
@@ -35,7 +36,7 @@ class MyButton extends StatelessWidget{
             width: 2,
             color: Colors.black
         ),
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
         child: new InkWell(
               onTap: () => _onTap(),
@@ -50,4 +51,29 @@ class MyButton extends StatelessWidget{
   }
 
 
+}
+
+List<Color> getColor(String widgetId) {
+  switch (widgetId) {
+    case "rainbow":
+      return [
+        Colors.pink,
+        Colors.red,
+        Colors.green,
+        Colors.purple,
+        Colors.teal
+      ];
+    case "rgb":
+      return [
+        Colors.blue,
+        Colors.red,
+        Colors.green
+
+      ];
+    default:
+      return [
+        Colors.white,
+        Colors.white
+      ];
+  }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hex/hex.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:flutter/painting.dart';
-//import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:rgbled_wifi/UI/flutter_circle_color_picker.dart';
 import 'package:rgbled_wifi/UI/my_button.dart';
 import 'package:rgbled_wifi/UI/secondary_light_switch.dart';
 import 'package:rgbled_wifi/UI/customicons/bulb_icons_icons.dart';
+import 'package:flutter/foundation.dart';
+
 
 
 const String A = "0123456789abcdef";
@@ -63,8 +65,11 @@ class MainPageV2State extends State<MainPageV2> {
                       ),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          gradient: LinearGradient(
+                            stops: _secondaryLed == true ? [0, 0.7] : [0],
+                            colors: _secondaryLed == true ? [_bgColor, _bgColorSec] : [_bgColor]
+                          )
                         ),
                         child: Center(
                           child: Text(
@@ -74,8 +79,88 @@ class MainPageV2State extends State<MainPageV2> {
                         ),
                       ),
                     ),
-                    MyButton("Rainbows!", true, () => _makeRequest(host, '/RAINBOW!')),
-                    MyButton("Flash!", false, () => print("BUTTONS!")),
+                    Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.white,
+                                  width: 1
+                              )
+                          )
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: 10,
+                              child: Text(
+                                "Flash the leds with the might of an rainbow!",
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          MyButton("Rainbows!",
+                                  () => _makeRequest(host, '/Rainbow'),  "rainbow"),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.white,
+                                  width: 1
+                              )
+                          )
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: 10,
+                              child: Text(
+                                "Loop trough Red, Green and Blue",
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          MyButton("RBG Loop", () => _makeRequest(host, '/LOOPRGB!'), "rgb"),
+                        ]
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.white,
+                                  width: 1
+                              )
+                          )
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: 10,
+                              child: Text(
+                                "Get completely random color!",
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          MyButton("Random!", () => _makeRequest(host, '/random')),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -85,22 +170,24 @@ class MainPageV2State extends State<MainPageV2> {
           body: new Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                    color: _bgColor,
-                ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: _bgColor,
+                  ),
 
-                child: Center(
-                  child: CircleColorPicker(
-                    initialColor: Colors.blue,
-                    onChanged: (color) {
-                      setState(() {
-                        _request(color, 0);
-                      });
-                    },
-                    //size: const Size(290, 290),
-                    strokeWidth: 4,
-                    thumbSize: 36,
+                  child: Center(
+                    child: CircleColorPicker(
+                      initialColor: Colors.blue,
+                      onChanged: (color) {
+                        setState(() {
+                          _request(color, 0);
+                        });
+                      },
+                      //size: const Size(290, 290),
+                      strokeWidth: 4,
+                      thumbSize: 36,
+                    ),
                   ),
                 ),
               ),
@@ -124,10 +211,11 @@ class MainPageV2State extends State<MainPageV2> {
                     ],
                   ),
                 ),
-              Container(
-                decoration: BoxDecoration(
+              _secondaryLed == true ? Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
                     color: _bgColorSec,
-                ),
+                  ),
                 child: Center(
                   child: CircleColorPicker(
                     initialColor: Colors.blue,
@@ -136,10 +224,40 @@ class MainPageV2State extends State<MainPageV2> {
                         _request(color, 1);
                       });
                     },
-                    //size: const Size(300, 300),
+                    size: const Size(300, 300),
                     strokeWidth: 4,
                     thumbSize: 36,
                   ),
+                ),
+              ),
+              ): Expanded(
+                child: Stack(
+                    children: <Widget>[
+                      Center(
+                        child: CircleColorPicker(
+                          initialColor: Colors.blue,
+                          onChanged: (color) {
+                            setState(() {
+                              _request(color, 1);
+                            });
+                          },
+                          //size: const Size(300, 300),
+                          strokeWidth: 4,
+                          thumbSize: 36,
+                        ),
+                      ),
+                      Container(
+                        color: Colors.black87  ,
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.all(25),
+                            child: Text("Turn on the second led to control it",
+                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
                 ),
               ),
             ],
@@ -199,14 +317,14 @@ void getResponse(Response response) {
   print("Done, " + response.body);
 }
 
-List<Widget> spawnButtons(int ammount) {
+/*List<Widget> spawnButtons(int ammount) {
   List<Widget> buttons = [];
-  buttons.add(MyButton("Rainbows!", true, () => _makeRequest(host, '/RAINBOW!')));
+  buttons.add(MyButton("Rainbows!", "rainbows", () => _makeRequest(host, '/RAINBOW!')));
   for(int i = 0; i<ammount;i++) {
-    buttons.add(MyButton("Button " + (i+1).toString(), false, () => print("not this")));
+    buttons.add(MyButton("Button " + (i+1).toString(), "" () => print("not this")));
   }
   return buttons;
-}
+}*/
 
 void activateSecondary(bool onOff) {
   print("Jotain tpahtui");
