@@ -22,12 +22,16 @@ bool effectOn = false;
 
 ESP8266WebServer server(80);
 
+CRGBPalette16 currentPalette;
+TBlendType currentBlending;
+
 //Server configuration
 void setup() {
   //ledstrip init
   delay(500);
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness( BRIGHTNESS );
+  currentBlending = LINEARBLEND;
   leds[0].red = 50;
   leds[1].green = 100;
   leds[2].blue = 150;
@@ -46,6 +50,7 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/colors", receiveColors);
   server.on("/random", randomColor);
+  server.on("/Rainbow", rainbow);
  //Start server
   server.begin();
   Serial.println("HTTP server started");
@@ -53,6 +58,13 @@ void setup() {
 }
 void loop() {
   server.handleClient();
+
+  if(effectOn){
+    static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; //move speed
+    FilledFromPalette( startIndex );
+  }
+  
   FastLED.show();
   FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
@@ -103,16 +115,6 @@ void checkMail(String led, String secondary, String r, String g, String b) {
   server.send(200);
 }
 
-void checkForBool() {
-  server.handleClient();
-  if(effectOn == true){
-   Serial.println("Bool is true");
-  } else {
-   Serial.println("Bool is false");
-  }
- 
-}
-
 void randomColor(){
   Serial.println("Random");
   effectOn = false;
@@ -122,4 +124,33 @@ void randomColor(){
   blue = random(255);
   fill_solid(leds, NUM_LEDS, CRGB(red, green, blue));
   server.send(200);
+}
+
+
+//Start rainbows with rainbow palette
+void rainbow() {
+  Serial.print("starting rainbows");
+  effectOn = true;
+  currentPalette = RainbowColors_p;
+  server.send(200);
+}
+
+void FilledFromPalette(uint8_t colorIndex) {
+
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+    colorIndex  += 3;
+  }
+}
+
+
+//Debug method
+void checkForBool() {
+  server.handleClient();
+  if(effectOn == true){
+   Serial.println("Bool is true");
+  } else {
+   Serial.println("Bool is false");
+  }
+ 
 }
