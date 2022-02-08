@@ -9,8 +9,8 @@
 #define NUM_LEDS 164
 //brightness, strip type, strip color order
 #define BRIGHTNESS 64
-#define LED_TYPE WS2812B
-#define COLOR_ORDER RGB
+#define LED_TYPE WS2811
+#define COLOR_ORDER GRB
 //led array
 CRGB leds[NUM_LEDS];
 #define UPDATES_PER_SECOND 100
@@ -28,6 +28,10 @@ void setup() {
   delay(500);
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness( BRIGHTNESS );
+  leds[0].red = 50;
+  leds[1].green = 100;
+  leds[2].blue = 150;
+  FastLED.show();
   delay(500);
   Serial.begin(115200);
   Serial.println();
@@ -81,7 +85,7 @@ void receiveColors() {
   Serial.println(g_new);
   Serial.println(b_new);
   //set the led color
-  CRGB color = CRGB( g_new, b_new, b_new );
+  CRGB color = CRGB( r_new, g_new, b_new );
   fill_solid(leds, NUM_LEDS, color);
 }
 
