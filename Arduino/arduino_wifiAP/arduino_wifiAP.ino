@@ -8,7 +8,7 @@
 #define LED_PIN 14
 #define NUM_LEDS 164
 //brightness, strip type, strip color order
-#define BRIGHTNESS 64
+#define BRIGHTNESS 200
 #define LED_TYPE WS2811
 #define COLOR_ORDER GRB
 //led array
@@ -18,9 +18,22 @@ CRGB leds[NUM_LEDS];
 //SSID and password
 const char *ssid = "LED";
 const char *password = "realityisalie";
-bool effectOn = false;
+bool effectOn;
+bool fireEffectOn;
 
 ESP8266WebServer server(80);
+
+//custom gradient palettes
+//fire palette
+uint8_t fireIndex[NUM_LEDS];
+DEFINE_GRADIENT_PALETTE( firecrackling_gp ){
+  0, 255, 0, 0,
+  55, 157, 46, 5,
+  102, 255, 177, 0,
+  120, 255, 118, 0,
+  204, 186, 1, 10,
+  255, 255, 0, 0
+};
 
 CRGBPalette16 currentPalette;
 TBlendType currentBlending;
@@ -35,6 +48,12 @@ void setup() {
   leds[0].red = 50;
   leds[1].green = 100;
   leds[2].blue = 150;
+
+  //fire palette setup --array filled with random  numbers
+  for(int i=0; i < NUM_LEDS; i++) {
+    fireIndex[i] = random8();
+  }
+  
   FastLED.show();
   delay(500);
   Serial.begin(115200);
@@ -51,6 +70,7 @@ void setup() {
   server.on("/colors", receiveColors);
   server.on("/random", randomColor);
   server.on("/Rainbow", rainbow);
+  server.on("/LOOPRGB!", loopRGB);
  //Start server
   server.begin();
   Serial.println("HTTP server started");
@@ -64,6 +84,27 @@ void loop() {
     startIndex = startIndex + 1; //move speed
     FilledFromPalette( startIndex );
   }
+
+  //dots plopping in and fading out
+  /*if(effectOn) {
+    EVERY_N_MILLISECONDS(1){
+      leds[random8(0, NUM_LEDS -1 )] = ColorFromPalette(currentPalette, random8(), 255, currentBlending);
+    }
+    fadeToBlackBy(leds, NUM_LEDS, 2);
+  }*/
+
+  if(fireEffectOn) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      leds[i] = ColorFromPalette(currentPalette, fireIndex[i]);
+    }
+
+    EVERY_N_MILLISECONDS(1) {
+      for(int i = 0; i < NUM_LEDS; i++) {
+        fireIndex[i]++;
+      }
+    }
+  }
+  
   
   FastLED.show();
   FastLED.delay(1000 / UPDATES_PER_SECOND);
@@ -75,6 +116,7 @@ void handleRoot() {
 void receiveColors() {
   Serial.println("You've got mail ");
   effectOn = false;
+  fireEffectOn = false;
   //Check received values
   checkMail(server.arg(0), server.arg(1), server.arg(2), server.arg(3), server.arg(4));
   int r_new=-1;
@@ -118,6 +160,7 @@ void checkMail(String led, String secondary, String r, String g, String b) {
 void randomColor(){
   Serial.println("Random");
   effectOn = false;
+  fireEffectOn = false;
   int red, green, blue;
   red = random(255);
   green = random(255);
@@ -130,15 +173,24 @@ void randomColor(){
 //Start rainbows with rainbow palette
 void rainbow() {
   Serial.print("starting rainbows");
+  fireEffectOn = false;
   effectOn = true;
   currentPalette = RainbowColors_p;
+  server.send(200);
+}
+
+void loopRGB() {
+  Serial.print("starting fire sequence");
+  effectOn = false;
+  fireEffectOn = true;
+  currentPalette = firecrackling_gp;
   server.send(200);
 }
 
 void FilledFromPalette(uint8_t colorIndex) {
 
   for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+    leds[i] = ColorFromPalette(currentPalette, colorIndex, 255, currentBlending);
     colorIndex  += 3;
   }
 }
